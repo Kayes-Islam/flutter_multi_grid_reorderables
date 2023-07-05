@@ -190,7 +190,7 @@ class _FlutterMultiGridReorderableState<G, T> extends State<FlutterMultiGridReor
               width: blockSize,
               height: blockSize,
               child: Center(
-                child: widget.blockBuilder(block.data!),
+                child: widget.blockBuilder(block.data as T),
               ),
             ),
           ),
@@ -229,7 +229,7 @@ class _FlutterMultiGridReorderableState<G, T> extends State<FlutterMultiGridReor
             isBeingDragged: block.isBeingDragged,
             isHoveredOn: block.isTargeted,
             child: Center(
-              child: widget.blockBuilder(block.data!),
+              child: widget.blockBuilder(block.data as T),
             ),
           ),
         );
@@ -240,7 +240,6 @@ class _FlutterMultiGridReorderableState<G, T> extends State<FlutterMultiGridReor
 
 class _GridItemWidget extends StatelessWidget {
   const _GridItemWidget({
-    super.key,
     required this.isBeingDragged,
     required this.isHoveredOn,
     required this.child,

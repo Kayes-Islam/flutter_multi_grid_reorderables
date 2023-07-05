@@ -4,10 +4,12 @@ import 'package:flutter_multi_grid_reorderables/group.dart';
 
 
 void main() {
-  runApp(SizedBox.fromSize(size: const Size(100, 1000), child: MyApp()));
+  runApp(SizedBox.fromSize(size: const Size(100, 1000), child: const MyApp()));
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -43,7 +45,7 @@ class MyApp extends StatelessWidget {
                   foregroundColor: MaterialStateProperty.all<Color>(Colors.black),
                 ),
                 onPressed: () { },
-                child: Icon(Icons.add),
+                child: const Icon(Icons.add),
               ),
         blockBuilder: (str) => Text(str),
       ),
