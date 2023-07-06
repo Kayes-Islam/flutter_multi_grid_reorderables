@@ -7,19 +7,20 @@ class FlutterMultiGridReorderable<G, T> extends StatefulWidget {
   final Widget Function(G groupData) groupTitleBuilder;
   final Widget Function(G groupData) groupButtonBuilder;
 
-  const FlutterMultiGridReorderable({
-    super.key, 
-    required this.data,
-    required this.blockBuilder,
-    required this.groupTitleBuilder,
-    required this.groupButtonBuilder
-  });
+  const FlutterMultiGridReorderable(
+      {super.key,
+      required this.data,
+      required this.blockBuilder,
+      required this.groupTitleBuilder,
+      required this.groupButtonBuilder});
 
   @override
-  _FlutterMultiGridReorderableState<G, T> createState() => _FlutterMultiGridReorderableState<G, T>();
+  _FlutterMultiGridReorderableState<G, T> createState() =>
+      _FlutterMultiGridReorderableState<G, T>();
 }
 
-class _FlutterMultiGridReorderableState<G, T> extends State<FlutterMultiGridReorderable<G, T>> {
+class _FlutterMultiGridReorderableState<G, T>
+    extends State<FlutterMultiGridReorderable<G, T>> {
   static const numberOfColumns = 5;
 
   late List<_GroupInternal<G, T>> groups;
@@ -33,7 +34,8 @@ class _FlutterMultiGridReorderableState<G, T> extends State<FlutterMultiGridReor
         widget.data[index].groupData,
         List<_BlockInternal<T>>.generate(
           widget.data[index].children.length,
-          (blockIndex) => _BlockInternal<T>(widget.data[index].children[blockIndex]),
+          (blockIndex) =>
+              _BlockInternal<T>(widget.data[index].children[blockIndex]),
         ),
       ),
     );
@@ -74,7 +76,8 @@ class _FlutterMultiGridReorderableState<G, T> extends State<FlutterMultiGridReor
                       block = group.blocks[index];
                     }
 
-                    return _buildDragTarget(context, group, block, isAddButton, index);
+                    return _buildDragTarget(
+                        context, group, block, isAddButton, index);
                   },
                 ),
               ],
@@ -97,7 +100,8 @@ class _FlutterMultiGridReorderableState<G, T> extends State<FlutterMultiGridReor
     });
   }
 
-  Widget _buildDragTarget(BuildContext context, _GroupInternal<G, T> group, _BlockInternal<T>? block, bool isAddButton, int index) {
+  Widget _buildDragTarget(BuildContext context, _GroupInternal<G, T> group,
+      _BlockInternal<T>? block, bool isAddButton, int index) {
     if (isAddButton) {
       return DragTarget<_BlockInternal<T>>(
         onWillAccept: (value) {
@@ -118,13 +122,12 @@ class _FlutterMultiGridReorderableState<G, T> extends State<FlutterMultiGridReor
         },
         builder: (context, candidateData, rejectedData) {
           return _GridItemWidget(
-            isBeingDragged: false, 
-            isHoveredOn: candidateData.isNotEmpty, 
-            child:  SizedBox.expand(
+            isBeingDragged: false,
+            isHoveredOn: candidateData.isNotEmpty,
+            child: SizedBox.expand(
               child: widget.groupButtonBuilder(group.groupData),
             ),
           );
-
         },
       );
     } else {
@@ -135,18 +138,18 @@ class _FlutterMultiGridReorderableState<G, T> extends State<FlutterMultiGridReor
             final sourceGroup = groups.firstWhere(
               (group) => group.blocks.contains(value),
             );
-            
+
             final sourceIndex = sourceGroup.blocks.indexOf(value);
             final targetIndex = targetGroup.blocks.indexOf(block!);
 
-            var insertIndex = sourceGroup == targetGroup && sourceIndex < targetIndex
-              ?  targetIndex - 1
-              : targetIndex;
+            var insertIndex =
+                sourceGroup == targetGroup && sourceIndex < targetIndex
+                    ? targetIndex - 1
+                    : targetIndex;
 
             sourceGroup.blocks.remove(value);
             targetGroup.blocks.insert(insertIndex, value);
-            
-            
+
             if (sourceGroup != targetGroup || sourceIndex != targetIndex) {
               _animateBlocksRearrangement();
             }
@@ -175,22 +178,23 @@ class _FlutterMultiGridReorderableState<G, T> extends State<FlutterMultiGridReor
     }
   }
 
-  Widget _buildBlockWidget(BuildContext context, _BlockInternal<T> block, int index) {
+  Widget _buildBlockWidget(
+      BuildContext context, _BlockInternal<T> block, int index) {
     return LayoutBuilder(
       builder: (context, constraints) {
         final blockSize = constraints.maxWidth;
         return LongPressDraggable<_BlockInternal<T>>(
           data: block,
-          feedback: Material(
-            child: Container(
-              decoration: BoxDecoration(
-                color: Colors.blue.withOpacity(0.3),
-              ),
-              padding: const EdgeInsets.all(8.0),
-              width: blockSize,
-              height: blockSize,
-              child: Center(
-                child: widget.blockBuilder(block.data as T),
+          feedback: Opacity(
+            opacity: 0.8,
+            child: Material(
+              child: Container(
+                padding: const EdgeInsets.all(8.0),
+                width: blockSize,
+                height: blockSize,
+                child: Center(
+                  child: widget.blockBuilder(block.data as T),
+                ),
               ),
             ),
           ),
@@ -213,12 +217,15 @@ class _FlutterMultiGridReorderableState<G, T> extends State<FlutterMultiGridReor
           },
           onDragUpdate: (details) {
             final RenderBox box = context.findRenderObject() as RenderBox;
-            final Offset localOffset = box.globalToLocal(details.globalPosition);
+            final Offset localOffset =
+                box.globalToLocal(details.globalPosition);
             final double indicatorWidth = box.size.width * 0.5;
             final bool isLeft = localOffset.dx < indicatorWidth;
-            final bool isRight = localOffset.dx > box.size.width - indicatorWidth;
+            final bool isRight =
+                localOffset.dx > box.size.width - indicatorWidth;
             final bool isTop = localOffset.dy < indicatorWidth;
-            final bool isBottom = localOffset.dy > box.size.height - indicatorWidth;
+            final bool isBottom =
+                localOffset.dy > box.size.height - indicatorWidth;
 
             setState(() {
               block.isTargeted = isLeft || isRight || isTop || isBottom;
@@ -243,7 +250,6 @@ class _GridItemWidget extends StatelessWidget {
     required this.isBeingDragged,
     required this.isHoveredOn,
     required this.child,
-
   });
 
   final Widget child;
@@ -254,21 +260,19 @@ class _GridItemWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: isBeingDragged ? Colors.grey.withOpacity(0.7) : null,
+        color: isBeingDragged ? Colors.grey : null,
         boxShadow: isHoveredOn
             ? [
                 BoxShadow(
                   color: Colors.green.withOpacity(0.9),
                   blurRadius: 8.0,
-                  spreadRadius: 4.0,
+                  // spreadRadius: 4.0,
                 ),
               ]
             : [],
       ),
       padding: const EdgeInsets.all(8.0),
-      child: Center(
-        child: child
-      ),
+      child: Center(child: child),
     );
   }
 }
