@@ -1,6 +1,6 @@
 class Group<G, T>{
-  G groupData;
+  G data;
   List<T> children;
 
-  Group(this.groupData, this.children);
+  Group(this.data, this.children);
 }
